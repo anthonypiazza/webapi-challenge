@@ -54,6 +54,10 @@ let chores = [
 ];
 let nextId = 4;
 
+server.get('/', (req, res) => {
+    res.send('Hello Elan, I have finished the sprint!')
+})
+
 
 server.get('/chores', (req, res) => {
     const completed = req.query.filter || 'completed';
