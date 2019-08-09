@@ -40,13 +40,28 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+1) Express is a framework on top of Node.js that simplifies backend creation
+2) Express can use middleware to filter server requests
+
+
 - [ ] What is Express Middleware?
+1)Express middleware are functions that get req,res objects and perform operations on them i.e) logging, validation, body content validation
+
+
 
 - [ ] How can a client send data to an API?
+Clients can send data to APIs via endpoints which are Uniform Resource Locators (URLs) which means that the client can retrieve/add/delete/update info at that specific location if they have the proper validation to do so
+
 
 - [ ] What can the API return to help clients know if a request was successful?
+APIs can return status codes which denote the degree of success or failure in the API request with specific messages to guid the dev in fixing it
+
 
 - [ ] What Express feature can we use to partition an application into sub-applications?
+Express.Router can be used to subdivide applications so files can be organized by endpoints or types of requests for readability and cleanliness purposes
+
+
+
 
 ## Minimum Viable Product
 
