@@ -35,21 +35,21 @@ let chores = [
         description: 'Take out the trash',
         notes: 'To do before 8pm',
         assignedTo: 2,
-        completed: 'true'
+        completed: true
     },
     {
         id: 2,
         description: 'Take out the recycling',
         notes: 'To do before 6pm',
         assignedTo: 1,
-        completed: 'false'
+        completed: false
     },
     {
         id: 3,
         description: 'Do the laundry',
         notes: 'Towels only',
         assignedTo: 3,
-        completed: 'false'
+        completed: false
     },
 ];
 let nextId = 4;
@@ -60,25 +60,37 @@ server.get('/', (req, res) => {
 
 
 server.get('/chores', (req, res) => {
-    const completed = req.query.filter || 'completed';
-
-    const response = chores.filter(chore => {
-        if(chore.completed === completed){
-            return chore
-        }
-    })
-
-    res.status(200).json(response)
+    const completed = req.query.filter;
+    console.log(completed)
+    if(completed){
+        res.status(200).json(chores.filter(chore => chore.completed == JSON.parse(completed)))
+    }else{
+        res.status(200).json(chores)
+    }
+    // const response = chores.map(chore => {
+    //     if(completed){
+    //         res.status(200).json(chore.completed == completed)
+    //     }else{
+    //         res.status(200).json(chores)
+    //     }
+    // })
+    // return response;
 })
 
 
-server.post('/chores', (req, res) => {
+server.post('/chores', validateUserId, (req, res) => {
     const chore = req.body;
     chore.id = nextId++;
+    chore.completed = false;
+    // const number = chore.assignedTo === JSON.parse(chore.assignedTo)
 
-    chores.push(chore);
+    if(!chore.description || !chore.assignedTo){
+        res.status(400).json({ error: "you need more info ya dum dum" })
+    }else{
+        chores.push(chore);
+        res.status(201).json(chores) 
+    }
 
-    res.status(201).json(chores)
 })
 
 
@@ -119,4 +131,18 @@ server.get('/person/:id/chores', (req,res) => {
         res.status(404).json({ error: "Couldn't fetch user's existing chores" })
     }
 })
+
+
+function validateUserId(req, res, next){
+
+    const userId = req.body.assignedTo;
+    
+    const person = people.find(p => p.id == userId)
+
+    if(person){
+        next();
+    }else{
+        res.status(400).json({ error: "You goofed my dude, id wasnt in people array" })
+    }
+}
 server.listen(port, () => console.log("Listening on Port 8000"))
