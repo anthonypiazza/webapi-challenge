@@ -48,11 +48,25 @@ let chores = [
         id: 3,
         description: 'Do the laundry',
         notes: 'Towels only',
-        assignedTo: 3,
+        assignedTo: 2,
         completed: false
     },
+    {
+        id: 4,
+        description: 'Do the laundry',
+        notes: 'Towels only',
+        assignedTo: 2,
+        completed: false
+    },
+    {
+        id: 5,
+        description: 'Do the laundry',
+        notes: 'Towels only',
+        assignedTo: 2,
+        completed: false
+    }
 ];
-let nextId = 4;
+let nextId = 6;
 
 server.get('/', (req, res) => {
     res.send('Hello Elan, I have finished the sprint!')
@@ -81,10 +95,17 @@ server.get('/chores', (req, res) => {
 server.post('/chores', validateUserId, (req, res) => {
     const chore = req.body;
     chore.id = nextId++;
-    chore.completed = false;
+
+    chore.completed = chore.completed || false 
+
+    // if(!chore.completed){
+    //     chore.completed = false;
+    // }else{
+    //     chore.completed = true;
+    // }
     // const number = chore.assignedTo === JSON.parse(chore.assignedTo)
 
-    if(!chore.description || !chore.assignedTo){
+    if(!chore.description){
         res.status(400).json({ error: "you need more info ya dum dum" })
     }else{
         chores.push(chore);
@@ -120,13 +141,11 @@ server.delete('/chores/:id', (req, res) => {
 
 server.get('/person/:id/chores', (req,res) => {
     const { id } = req.params;
-    const userChores = chores.find(task => task.assignedTo == id)
+    const userChores = chores.filter(task => task.assignedTo == id)
     const userExists = people.find(user => user.id == id)
 
-    if(userChores){
+    if(userExists){
         res.status(201).json(userChores)
-    }else if(userExists){
-        res.status(404).json([])
     }else{
         res.status(404).json({ error: "Couldn't fetch user's existing chores" })
     }
@@ -145,4 +164,5 @@ function validateUserId(req, res, next){
         res.status(400).json({ error: "You goofed my dude, id wasnt in people array" })
     }
 }
+
 server.listen(port, () => console.log("Listening on Port 8000"))
